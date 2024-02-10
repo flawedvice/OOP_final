@@ -4,6 +4,9 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="KyhoDp" name="DJ_Application">
     <GROUP id="{1139D64D-8371-3599-EA72-E2DC2A3AA757}" name="Source">
+      <FILE id="azCCJv" name="DJAudioPlayer.h" compile="0" resource="0" file="Source/DJAudioPlayer.h"/>
+      <FILE id="WLGaGv" name="DJAudioPlayer.cpp" compile="1" resource="0"
+            file="Source/DJAudioPlayer.cpp"/>
       <FILE id="B2C6NM" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="pxQW96" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="SdCQv9" name="MainComponent.cpp" compile="1" resource="0"

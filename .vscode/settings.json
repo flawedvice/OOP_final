@@ -1,3 +1,7 @@
 {
-    "julia.environmentPath": "/home/vicente/Studies/UoL/OOP/DJ_application"
+    "julia.environmentPath": "/home/vicente/Studies/UoL/OOP/DJ_application",
+    "files.associations": {
+        "iostream": "cpp",
+        "*.mm": "cpp"
+    }
 }
