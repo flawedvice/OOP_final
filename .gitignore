@@ -1,3 +1,4 @@
 JUCE/**/*
 JuceLibraryCode/**/*
+build
 DJ_Application/Builds/LinuxMakefile/build/
