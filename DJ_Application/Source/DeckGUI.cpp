@@ -18,19 +18,28 @@ DeckGUI::DeckGUI(DJAudioPlayer *_player,
                                                           waveformDisplay(formatManagerToUse, cacheToUse)
 {
 
+    addAndMakeVisible(waveformDisplay);
+
     addAndMakeVisible(playButton);
     addAndMakeVisible(stopButton);
     addAndMakeVisible(loadButton);
+    addAndMakeVisible(loopButton);
+
+    addAndMakeVisible(playlistComponent);
 
     addAndMakeVisible(volSlider);
     addAndMakeVisible(speedSlider);
     addAndMakeVisible(posSlider);
 
-    addAndMakeVisible(waveformDisplay);
+    volSlider.setLookAndFeel(&customLook);
+    volSlider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
+    speedSlider.setLookAndFeel(&customLook);
+    speedSlider.setSliderStyle(juce::Slider::Rotary);
 
     playButton.addListener(this);
     stopButton.addListener(this);
     loadButton.addListener(this);
+    loopButton.addListener(this);
 
     volSlider.addListener(this);
     speedSlider.addListener(this);
@@ -70,14 +79,20 @@ void DeckGUI::paint(juce::Graphics &g)
 
 void DeckGUI::resized()
 {
+    double yMargin = getHeight() / 14;
+    double xMargin = getWidth() / 16;
     double rowH = getHeight() / 8;
-    playButton.setBounds(0, 0, getWidth(), rowH);
-    stopButton.setBounds(0, rowH, getWidth(), rowH);
-    volSlider.setBounds(0, rowH * 2, getWidth(), rowH);
-    speedSlider.setBounds(0, rowH * 3, getWidth(), rowH);
-    posSlider.setBounds(0, rowH * 4, getWidth(), rowH);
-    waveformDisplay.setBounds(0, rowH * 5, getWidth(), rowH * 2);
-    loadButton.setBounds(0, rowH * 7, getWidth(), rowH);
+    double colW = getWidth() / 6;
+
+    posSlider.setBounds(colW - xMargin, rowH * 3 - yMargin, colW * 3, rowH);
+    waveformDisplay.setBounds(colW - xMargin, rowH * 4 - yMargin, colW * 3, rowH);
+    loadButton.setBounds(colW - xMargin, rowH * 5 - yMargin, colW, rowH);
+    playButton.setBounds(colW * 2 - xMargin, rowH * 5 - yMargin, colW, rowH);
+    stopButton.setBounds(colW * 3 - xMargin, rowH * 5 - yMargin, colW, rowH);
+    playlistComponent.setBounds(colW - xMargin, rowH * 6 - yMargin, colW * 3, rowH * 2);
+    loopButton.setBounds(colW * 5 - xMargin, rowH * 2 - yMargin, colW, rowH);
+    speedSlider.setBounds(colW * 5 - xMargin, rowH * 3 - yMargin, colW, rowH);
+    volSlider.setBounds(colW * 5 - xMargin, rowH * 4 - yMargin, colW, rowH * 4);
 }
 
 void DeckGUI::buttonClicked(juce::Button *button)
@@ -102,17 +117,20 @@ void DeckGUI::buttonClicked(juce::Button *button)
             // and now the waveformDisplay as well
             waveformDisplay.loadURL(juce::URL{chooser.getResult()}); });
     }
-    // if (button == &loadButton)
-    // {
-    //     FileChooser chooser{"Select a file..."};
-    //     if (chooser.browseForFileToOpen())
-    //     {
-    //         player->loadURL(URL{chooser.getResult()});
-    //         waveformDisplay.loadURL(URL{chooser.getResult()});
-
-    //     }
-
-    // }
+    if (button == &loopButton)
+    {
+        bool isLooping = player->getLooping();
+        if (isLooping)
+        {
+            player->setLooping(false);
+            button->setButtonText("Not looping");
+        }
+        else
+        {
+            player->setLooping(true);
+            button->setButtonText("Looping");
+        }
+    }
 }
 
 void DeckGUI::sliderValueChanged(juce::Slider *slider)

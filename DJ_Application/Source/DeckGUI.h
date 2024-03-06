@@ -13,6 +13,8 @@
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
 #include "WaveformDisplay.h"
+#include "PlaylistComponent.h"
+#include "CustomLookAndFeel.h"
 
 //==============================================================================
 /*
@@ -44,9 +46,10 @@ public:
   void timerCallback() override;
 
 private:
-  juce::TextButton playButton{"PLAY"};
-  juce::TextButton stopButton{"STOP"};
-  juce::TextButton loadButton{"LOAD"};
+  juce::TextButton playButton{"Play"};
+  juce::TextButton stopButton{"Stop"};
+  juce::TextButton loadButton{"Load"};
+  juce::TextButton loopButton{"Loop"};
 
   juce::Slider volSlider;
   juce::Slider speedSlider;
@@ -57,6 +60,10 @@ private:
   WaveformDisplay waveformDisplay;
 
   DJAudioPlayer *player;
+
+  PlaylistComponent playlistComponent;
+
+  CustomLookAndFeel customLook;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeckGUI)
 };

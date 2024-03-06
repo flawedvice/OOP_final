@@ -27,6 +27,9 @@ public:
   void setSpeed(double ratio);
   void setPosition(double posInSecs);
   void setPositionRelative(double pos);
+  /** Allows user to set track in loop mode */
+  void setLooping(bool allowLoop);
+  bool getLooping();
 
   void start();
   void stop();

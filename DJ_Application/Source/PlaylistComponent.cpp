@@ -24,7 +24,7 @@ PlaylistComponent::PlaylistComponent()
   trackTitles.push_back("Track 5");
   trackTitles.push_back("Track 6");
 
-  tableComponent.getHeader().addColumn("Track title", 0, 400);
+  tableComponent.getHeader().addColumn("Title", 0, 400);
   tableComponent.getHeader().addColumn("", 1, 200);
   tableComponent.setModel(this);
 

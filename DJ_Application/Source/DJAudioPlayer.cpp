@@ -14,6 +14,7 @@ DJAudioPlayer::DJAudioPlayer(juce::AudioFormatManager &_formatManager)
     : formatManager(_formatManager)
 {
 }
+
 DJAudioPlayer::~DJAudioPlayer()
 {
 }
@@ -27,6 +28,7 @@ void DJAudioPlayer::getNextAudioBlock(const juce::AudioSourceChannelInfo &buffer
 {
     resampleSource.getNextAudioBlock(bufferToFill);
 }
+
 void DJAudioPlayer::releaseResources()
 {
     transportSource.releaseResources();
@@ -44,6 +46,7 @@ void DJAudioPlayer::loadURL(juce::URL audioURL)
         readerSource.reset(newSource.release());
     }
 }
+
 void DJAudioPlayer::setGain(double gain)
 {
     if (gain < 0 || gain > 1.0)
@@ -55,6 +58,7 @@ void DJAudioPlayer::setGain(double gain)
         transportSource.setGain(gain);
     }
 }
+
 void DJAudioPlayer::setSpeed(double ratio)
 {
     if (ratio < 0 || ratio > 100.0)
@@ -66,6 +70,7 @@ void DJAudioPlayer::setSpeed(double ratio)
         resampleSource.setResamplingRatio(ratio);
     }
 }
+
 void DJAudioPlayer::setPosition(double posInSecs)
 {
     transportSource.setPosition(posInSecs);
@@ -84,10 +89,28 @@ void DJAudioPlayer::setPositionRelative(double pos)
     }
 }
 
+void DJAudioPlayer::setLooping(bool allowLoop)
+{
+    if (readerSource != nullptr)
+    {
+        readerSource.get()->setLooping(allowLoop);
+    }
+}
+
+bool DJAudioPlayer::getLooping()
+{
+    if (readerSource != nullptr)
+    {
+        return readerSource.get()->isLooping();
+    }
+    return false;
+}
+
 void DJAudioPlayer::start()
 {
     transportSource.start();
 }
+
 void DJAudioPlayer::stop()
 {
     transportSource.stop();
