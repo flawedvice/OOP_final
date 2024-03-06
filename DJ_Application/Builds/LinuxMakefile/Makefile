@@ -72,10 +72,12 @@ ifeq ($(CONFIG),Release)
 endif
 
 OBJECTS_APP := \
+  $(JUCE_OBJDIR)/DeckGUI_914d8333.o \
   $(JUCE_OBJDIR)/DJAudioPlayer_f05158f2.o \
   $(JUCE_OBJDIR)/Main_90ebc5c2.o \
   $(JUCE_OBJDIR)/MainComponent_a6ffb4a5.o \
-  $(JUCE_OBJDIR)/DeckGUI_914d8333.o \
+  $(JUCE_OBJDIR)/PlaylistComponent_76bc332c.o \
+  $(JUCE_OBJDIR)/WaveformDisplay_c81a80a6.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_63111d02.o \
   $(JUCE_OBJDIR)/include_juce_audio_formats_15f82001.o \
@@ -103,6 +105,11 @@ $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : $(OBJECTS_APP) $(JUCE_OBJDIR)/execinfo.cmd $
 	-$(V_AT)mkdir -p $(JUCE_OUTDIR)
 	$(V_AT)$(CXX) -o $(JUCE_OUTDIR)/$(JUCE_TARGET_APP) $(OBJECTS_APP) $(JUCE_LDFLAGS) $(shell cat $(JUCE_OBJDIR)/execinfo.cmd) $(JUCE_LDFLAGS_APP) $(RESOURCES) $(TARGET_ARCH)
 
+$(JUCE_OBJDIR)/DeckGUI_914d8333.o: ../../Source/DeckGUI.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling DeckGUI.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/DJAudioPlayer_f05158f2.o: ../../Source/DJAudioPlayer.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling DJAudioPlayer.cpp"
@@ -118,9 +125,14 @@ $(JUCE_OBJDIR)/MainComponent_a6ffb4a5.o: ../../Source/MainComponent.cpp
 	@echo "Compiling MainComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/DeckGUI_914d8333.o: ../../Source/DeckGUI.cpp
+$(JUCE_OBJDIR)/PlaylistComponent_76bc332c.o: ../../Source/PlaylistComponent.cpp
 	-$(V_AT)mkdir -p $(@D)
-	@echo "Compiling DeckGUI.cpp"
+	@echo "Compiling PlaylistComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/WaveformDisplay_c81a80a6.o: ../../Source/WaveformDisplay.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling WaveformDisplay.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o: ../../JuceLibraryCode/include_juce_audio_basics.cpp
@@ -204,6 +216,6 @@ clean:
 
 strip:
 	@echo Stripping DJ_Application
-	-$(V_AT)$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(JUCE_TARGET_APP)
+	-$(V_AT)$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(TARGET)
 
 -include $(OBJECTS_APP:%.o=%.d)

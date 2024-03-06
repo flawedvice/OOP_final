@@ -2,8 +2,8 @@
   ==============================================================================
 
     WaveformDisplay.cpp
-    Created: 14 Mar 2020 3:50:16pm
-    Author:  matthew
+    Created: 6 Mar 2024 11:08:49am
+    Author:  vicente
 
   ==============================================================================
 */
@@ -20,7 +20,6 @@ WaveformDisplay::WaveformDisplay(juce::AudioFormatManager &formatManagerToUse,
 {
   // In your constructor, you should add any child components, and
   // initialise any special settings that your component needs.
-
   audioThumb.addChangeListener(this);
 }
 
