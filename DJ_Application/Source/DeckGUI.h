@@ -2,8 +2,8 @@
   ==============================================================================
 
     DeckGUI.h
-    Created: 11 Feb 2024 10:34:42am
-    Author:  vicente
+    Created: 13 Mar 2020 6:44:48pm
+    Author:  matthew
 
   ==============================================================================
 */
@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
+#include "WaveformDisplay.h"
 
 //==============================================================================
 /*
@@ -19,33 +20,43 @@
 class DeckGUI : public juce::Component,
                 public juce::Button::Listener,
                 public juce::Slider::Listener,
-                public juce::FileDragAndDropTarget
+                public juce::FileDragAndDropTarget,
+                public juce::Timer
 {
 public:
-  DeckGUI(DJAudioPlayer *player);
-  ~DeckGUI() override;
+  DeckGUI(DJAudioPlayer *player,
+          juce::AudioFormatManager &formatManagerToUse,
+          juce::AudioThumbnailCache &cacheToUse);
+  ~DeckGUI();
 
   void paint(juce::Graphics &) override;
   void resized() override;
 
-  void buttonClicked(juce::Button *button);
-  void sliderValueChanged(juce::Slider *slider);
+  /** implement Button::Listener */
+  void buttonClicked(juce::Button *) override;
+
+  /** implement Slider::Listener */
+  void sliderValueChanged(juce::Slider *slider) override;
 
   bool isInterestedInFileDrag(const juce::StringArray &files) override;
   void filesDropped(const juce::StringArray &files, int x, int y) override;
+
+  void timerCallback() override;
 
 private:
   juce::TextButton playButton{"PLAY"};
   juce::TextButton stopButton{"STOP"};
   juce::TextButton loadButton{"LOAD"};
 
-  juce::Slider volumeSlider;
-  juce::Slider positionSlider;
+  juce::Slider volSlider;
   juce::Slider speedSlider;
+  juce::Slider posSlider;
+
+  juce::FileChooser fChooser{"Select a file..."};
+
+  WaveformDisplay waveformDisplay;
 
   DJAudioPlayer *player;
-
-  std::unique_ptr<juce::FileChooser> chooser;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DeckGUI)
 };

@@ -204,6 +204,6 @@ clean:
 
 strip:
 	@echo Stripping DJ_Application
-	-$(V_AT)$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(TARGET)
+	-$(V_AT)$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(JUCE_TARGET_APP)
 
 -include $(OBJECTS_APP:%.o=%.d)

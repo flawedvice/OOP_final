@@ -1,8 +1,17 @@
+/*
+  ==============================================================================
+
+    This file was auto-generated!
+
+  ==============================================================================
+*/
+
 #pragma once
 
 #include <JuceHeader.h>
 #include "DJAudioPlayer.h"
 #include "DeckGUI.h"
+#include "PlaylistComponent.h"
 
 //==============================================================================
 /*
@@ -12,32 +21,35 @@
 class MainComponent : public juce::AudioAppComponent
 {
 public:
-    //==============================================================================
-    MainComponent();
-    ~MainComponent() override;
+  //==============================================================================
+  MainComponent();
+  ~MainComponent();
 
-    //==============================================================================
-    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
-    void releaseResources() override;
+  //==============================================================================
+  void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+  void getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill) override;
+  void releaseResources() override;
 
-    //==============================================================================
-    void paint(juce::Graphics &g) override;
-    void resized() override;
-    //==============================================================================
-    // Own methods
+  //==============================================================================
+  void paint(juce::Graphics &g) override;
+  void resized() override;
 
 private:
-    //==============================================================================
-    // Your private member variables go here...
+  //==============================================================================
+  // Your private member variables go here...
 
-    DJAudioPlayer player1;
-    DeckGUI deckGUI1{&player1};
+  juce::AudioFormatManager formatManager;
+  juce::AudioThumbnailCache thumbCache{100};
 
-    DJAudioPlayer player2;
-    DeckGUI deckGUI2{&player2};
+  DJAudioPlayer player1{formatManager};
+  DeckGUI deckGUI1{&player1, formatManager, thumbCache};
 
-    juce::MixerAudioSource mixerSource;
+  DJAudioPlayer player2{formatManager};
+  DeckGUI deckGUI2{&player2, formatManager, thumbCache};
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
+  juce::MixerAudioSource mixerSource;
+
+  PlaylistComponent playlistComponent;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };
