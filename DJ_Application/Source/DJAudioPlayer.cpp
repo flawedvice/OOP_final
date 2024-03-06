@@ -96,10 +96,12 @@ void DJAudioPlayer::setPositionRelative(double pos)
 
 void DJAudioPlayer::play()
 {
+  playing = true;
   transportSource.start();
 }
 
 void DJAudioPlayer::stop()
 {
+  playing = false;
   transportSource.stop();
 }

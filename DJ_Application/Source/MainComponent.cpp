@@ -21,13 +21,8 @@ MainComponent::MainComponent()
         setAudioChannels(2, 2);
     }
 
-    addAndMakeVisible(playButton);
-    addAndMakeVisible(stopButton);
-    addAndMakeVisible(loadButton);
-    loadButton.addListener(this);
-    loadButton.setButtonText("LOAD");
-
-    gainSlider.setRange(0, 1);
+    addAndMakeVisible(deckGUI1);
+    addAndMakeVisible(deckGUI2);
 }
 
 MainComponent::~MainComponent()
@@ -47,12 +42,17 @@ void MainComponent::prepareToPlay(int samplesPerBlockExpected, double sampleRate
 
     // For more details, see the help for AudioProcessor::prepareToPlay()
     player1.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    player2.prepareToPlay(samplesPerBlockExpected, sampleRate);
+
+    mixerSource.prepareToPlay(samplesPerBlockExpected, sampleRate);
+    mixerSource.addInputSource(&player1, false);
+    mixerSource.addInputSource(&player2, false);
 }
 
 void MainComponent::getNextAudioBlock(const juce::AudioSourceChannelInfo &bufferToFill)
 {
     // Your audio-processing code goes here!
-    player1.getNextAudioBlock(bufferToFill);
+    mixerSource.getNextAudioBlock(bufferToFill);
 }
 
 void MainComponent::releaseResources()
@@ -61,7 +61,7 @@ void MainComponent::releaseResources()
     // restarted due to a setting change.
 
     // For more details, see the help for AudioProcessor::releaseResources()
-    player1.releaseResources();
+    mixerSource.releaseResources();
 }
 
 //==============================================================================
@@ -75,70 +75,6 @@ void MainComponent::paint(juce::Graphics &g)
 
 void MainComponent::resized()
 {
-    // This is called when the MainContentComponent is resized.
-    // If you add any child components, this is where you should
-    // update their positions.
-
-    playButton.setBounds(0, 0, getWidth(), getHeight() / 5);
-    stopButton.setBounds(0, getHeight() / 5, getWidth(), getHeight() / 5);
-    loadButton.setBounds(0, getHeight() / 5 * 2, getWidth(), getHeight() / 5);
-    gainSlider.setBounds(0, getHeight() / 5 * 3, getWidth(), getHeight() / 5);
-}
-
-void MainComponent::buttonClicked(juce::Button *button)
-{
-    if (button == &playButton)
-    {
-        playing = true;
-        player1.play();
-    }
-    else if (button == &stopButton)
-    {
-        playing = false;
-        player1.stop();
-    }
-    else if (button == &loadButton)
-    {
-        std::cout << "Load btn!" << std::endl;
-
-        chooser = std::make_unique<juce::FileChooser>("Select a WAV file to play...", juce::File{}, "*.wav");
-
-        auto fileChooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles;
-
-        chooser->launchAsync(fileChooserFlags, [this](const juce::FileChooser &chooser)
-                             {
-            std::cout << "Opened chooser!" << std::endl;
-            auto file = chooser.getResult();
-            if (file != juce::File{})
-            {
-                std::cout << "Chose file: " << file.getFileName() << std::endl;
-
-                juce::URL audioURL = juce::URL{chooser.getResult()};
-                player1.loadURL(audioURL);
-            } });
-    }
-
-    /*/ - configure the dialogue
-
-    // - launch out of the main thread
-    // - note how we use a lambda function which you've probably
-    // not seen before. Please do not worry too much about that
-    // but it is necessary as of JUCE 6.1
-    fChooser.launchAsync(fileChooserFlags,
-                         [this](const juce::FileChooser &chooser)
-                         {
-                             auto chosenFile = chooser.getResult();
-                             loadURL(juce::URL{chosenFile});
-                         });
-    */
-}
-
-void MainComponent::sliderValueChanged(juce::Slider *slider)
-{
-    if (slider == &gainSlider)
-    {
-        std::cout << gainSlider.getValue() << std::endl;
-        gain = gainSlider.getValue();
-        player1.setGain(gain);
-    }
+    deckGUI1.setBounds(0, 0, getWidth() / 2, getHeight());
+    deckGUI2.setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight());
 }

@@ -38,6 +38,7 @@ public:
   void stop();
 
 private:
+  bool playing;
   juce::AudioFormatManager formatManager;
   std::unique_ptr<juce::AudioFormatReaderSource> readerSource;
   juce::AudioTransportSource transportSource;
