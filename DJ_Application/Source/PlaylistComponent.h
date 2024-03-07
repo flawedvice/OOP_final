@@ -20,6 +20,7 @@
 class PlaylistComponent : public juce::Component,
                           public juce::TableListBoxModel,
                           public juce::Button::Listener
+
 {
 public:
   PlaylistComponent();

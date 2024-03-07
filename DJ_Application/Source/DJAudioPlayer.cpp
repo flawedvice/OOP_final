@@ -89,12 +89,14 @@ void DJAudioPlayer::setPositionRelative(double pos)
     }
 }
 
-void DJAudioPlayer::setLooping(bool allowLoop)
+bool DJAudioPlayer::setLooping(bool allowLoop)
 {
     if (readerSource != nullptr)
     {
         readerSource.get()->setLooping(allowLoop);
+        return true;
     }
+    return false;
 }
 
 bool DJAudioPlayer::getLooping()
@@ -119,4 +121,38 @@ void DJAudioPlayer::stop()
 double DJAudioPlayer::getPositionRelative()
 {
     return transportSource.getCurrentPosition() / transportSource.getLengthInSeconds();
+}
+
+std::string DJAudioPlayer::getTrackProgress()
+{
+    if (transportSource.getLengthInSeconds() <= 0)
+    {
+        return "00:00 / 00:00";
+    }
+
+    float rawTotalSeconds = transportSource.getLengthInSeconds();
+    int totalMinutes = (int)rawTotalSeconds / 60;
+    int totalSeconds = (int)rawTotalSeconds - totalMinutes * 60;
+    std::string strTotalMinutes = std::to_string(totalMinutes);
+    std::string strTotalSeconds = std::to_string(totalSeconds);
+    if (totalSeconds < 10)
+    {
+        strTotalSeconds = "0" + strTotalSeconds;
+    }
+    std::string totalLength = strTotalMinutes + ":" + strTotalSeconds;
+
+    float rawCurrentSeconds = transportSource.getCurrentPosition();
+    int currentMinutes = (int)rawCurrentSeconds / 60;
+    int currentSeconds = (int)rawCurrentSeconds - currentMinutes * 60;
+    std::string strCurrentMinutes = std::to_string(currentMinutes);
+    std::string strCurrentSeconds = std::to_string(currentSeconds);
+    if (currentSeconds < 10)
+    {
+        strCurrentSeconds = "0" + strCurrentSeconds;
+    }
+    std::string currentLength = strCurrentMinutes + ":" + strCurrentSeconds;
+
+    std::string progress = currentLength + " / " + totalLength;
+
+    return progress;
 }

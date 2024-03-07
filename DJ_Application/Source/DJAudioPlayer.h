@@ -27,8 +27,8 @@ public:
   void setSpeed(double ratio);
   void setPosition(double posInSecs);
   void setPositionRelative(double pos);
-  /** Allows user to set track in loop mode */
-  void setLooping(bool allowLoop);
+  /** Allows user to set track in loop mode indicating if op was successful */
+  bool setLooping(bool allowLoop);
   bool getLooping();
 
   void start();
@@ -36,6 +36,9 @@ public:
 
   /** get the relative position of the playhead */
   double getPositionRelative();
+
+  /** Gets length of song and its progress */
+  std::string getTrackProgress();
 
 private:
   juce::AudioFormatManager &formatManager;

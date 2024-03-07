@@ -22,6 +22,8 @@
           file="Source/PlaylistComponent.cpp"/>
     <FILE id="vod2Vw" name="PlaylistComponent.h" compile="0" resource="0"
           file="Source/PlaylistComponent.h"/>
+    <FILE id="iwSQqH" name="TrackInfo.cpp" compile="1" resource="0" file="Source/TrackInfo.cpp"/>
+    <FILE id="YdveqQ" name="TrackInfo.h" compile="0" resource="0" file="Source/TrackInfo.h"/>
     <FILE id="FmMVUK" name="WaveformDisplay.cpp" compile="1" resource="0"
           file="Source/WaveformDisplay.cpp"/>
     <FILE id="BX03I8" name="WaveformDisplay.h" compile="0" resource="0"

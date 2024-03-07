@@ -22,6 +22,7 @@
 class DeckGUI : public juce::Component,
                 public juce::Button::Listener,
                 public juce::Slider::Listener,
+                public juce::Label::Listener,
                 public juce::FileDragAndDropTarget,
                 public juce::Timer
 {
@@ -40,22 +41,28 @@ public:
   /** implement Slider::Listener */
   void sliderValueChanged(juce::Slider *slider) override;
 
+  /** Listen to Label text changes*/
+  void labelTextChanged(juce::Label *labelThatHasChanged);
+
   bool isInterestedInFileDrag(const juce::StringArray &files) override;
   void filesDropped(const juce::StringArray &files, int x, int y) override;
 
   void timerCallback() override;
 
 private:
+  juce::Label trackTitle;
+  juce::Label trackProgress;
+
   juce::TextButton playButton{"Play"};
   juce::TextButton stopButton{"Stop"};
   juce::TextButton loadButton{"Load"};
-  juce::TextButton loopButton{"Loop"};
+  juce::TextButton loopButton{"Not looping"};
 
   juce::Slider volSlider;
   juce::Slider speedSlider;
   juce::Slider posSlider;
 
-  juce::FileChooser fChooser{"Select a file..."};
+  juce::FileChooser fChooser{"Select a file...", juce::File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory().getParentDirectory().getChildFile("tracks")};
 
   WaveformDisplay waveformDisplay;
 

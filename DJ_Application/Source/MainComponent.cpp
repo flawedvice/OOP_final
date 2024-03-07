@@ -32,6 +32,9 @@ MainComponent::MainComponent()
     addAndMakeVisible(deckGUI2);
 
     formatManager.registerBasicFormats();
+
+    // Main Component now listens to Keyboard events
+    addKeyListener(this);
 }
 
 MainComponent::~MainComponent()
@@ -80,4 +83,17 @@ void MainComponent::resized()
 {
     deckGUI1.setBounds(0, 0, getWidth() / 2, getHeight());
     deckGUI2.setBounds(getWidth() / 2, 0, getWidth() / 2, getHeight());
+}
+
+bool MainComponent::keyPressed(const juce::KeyPress &key, juce::Component *originatingComponent)
+{
+    const int w = 119;
+    const int q = 113;
+    bool validCloseKey = key.getKeyCode() == w || key.getKeyCode() == q;
+    if (key.getModifiers().isCtrlDown() && validCloseKey)
+    {
+        juce::JUCEApplication::quit();
+        return true;
+    }
+    return false;
 }

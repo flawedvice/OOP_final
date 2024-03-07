@@ -78,6 +78,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/MainComponent_a6ffb4a5.o \
   $(JUCE_OBJDIR)/CustomLookAndFeel_ab3d772e.o \
   $(JUCE_OBJDIR)/PlaylistComponent_76bc332c.o \
+  $(JUCE_OBJDIR)/TrackInfo_f48ccd7a.o \
   $(JUCE_OBJDIR)/WaveformDisplay_c81a80a6.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_8a4e984a.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_63111d02.o \
@@ -134,6 +135,11 @@ $(JUCE_OBJDIR)/CustomLookAndFeel_ab3d772e.o: ../../Source/CustomLookAndFeel.cpp
 $(JUCE_OBJDIR)/PlaylistComponent_76bc332c.o: ../../Source/PlaylistComponent.cpp
 	-$(V_AT)mkdir -p $(@D)
 	@echo "Compiling PlaylistComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TrackInfo_f48ccd7a.o: ../../Source/TrackInfo.cpp
+	-$(V_AT)mkdir -p $(@D)
+	@echo "Compiling TrackInfo.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/WaveformDisplay_c81a80a6.o: ../../Source/WaveformDisplay.cpp

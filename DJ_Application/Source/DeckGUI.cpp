@@ -17,8 +17,25 @@ DeckGUI::DeckGUI(DJAudioPlayer *_player,
                  juce::AudioThumbnailCache &cacheToUse) : player(_player),
                                                           waveformDisplay(formatManagerToUse, cacheToUse)
 {
+    trackTitle.addListener(this);
+    trackTitle.setFont(14.0f);
+    trackTitle.setJustificationType(juce::Justification::centred);
+    trackTitle.setColour(juce::Label::ColourIds::textColourId, juce::Colours::orange);
+    trackTitle.setText("No track selected", juce::NotificationType::dontSendNotification);
+    addAndMakeVisible(trackTitle);
+
+    trackProgress.setFont(14.0f);
+    trackProgress.setJustificationType(juce::Justification::centredTop);
+    trackProgress.setColour(juce::Label::ColourIds::textColourId, juce::Colours::orange);
+    trackProgress.setText("00:00 / 00:00", juce::NotificationType::dontSendNotification);
+    addAndMakeVisible(trackProgress);
 
     addAndMakeVisible(waveformDisplay);
+
+    playButton.addListener(this);
+    stopButton.addListener(this);
+    loadButton.addListener(this);
+    loopButton.addListener(this);
 
     addAndMakeVisible(playButton);
     addAndMakeVisible(stopButton);
@@ -27,20 +44,6 @@ DeckGUI::DeckGUI(DJAudioPlayer *_player,
 
     addAndMakeVisible(playlistComponent);
 
-    addAndMakeVisible(volSlider);
-    addAndMakeVisible(speedSlider);
-    addAndMakeVisible(posSlider);
-
-    volSlider.setLookAndFeel(&customLook);
-    volSlider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
-    speedSlider.setLookAndFeel(&customLook);
-    speedSlider.setSliderStyle(juce::Slider::Rotary);
-
-    playButton.addListener(this);
-    stopButton.addListener(this);
-    loadButton.addListener(this);
-    loopButton.addListener(this);
-
     volSlider.addListener(this);
     speedSlider.addListener(this);
     posSlider.addListener(this);
@@ -48,6 +51,15 @@ DeckGUI::DeckGUI(DJAudioPlayer *_player,
     volSlider.setRange(0.0, 1.0);
     speedSlider.setRange(0.0, 100.0);
     posSlider.setRange(0.0, 1.0);
+
+    volSlider.setLookAndFeel(&customLook);
+    volSlider.setSliderStyle(juce::Slider::SliderStyle::LinearVertical);
+    speedSlider.setLookAndFeel(&customLook);
+    speedSlider.setSliderStyle(juce::Slider::Rotary);
+
+    addAndMakeVisible(volSlider);
+    addAndMakeVisible(speedSlider);
+    addAndMakeVisible(posSlider);
 
     startTimer(500);
 }
@@ -70,11 +82,6 @@ void DeckGUI::paint(juce::Graphics &g)
 
     g.setColour(juce::Colours::grey);
     g.drawRect(getLocalBounds(), 1); // draw an outline around the component
-
-    g.setColour(juce::Colours::white);
-    g.setFont(14.0f);
-    g.drawText("DeckGUI", getLocalBounds(),
-               juce::Justification::centred, true); // draw some placeholder text
 }
 
 void DeckGUI::resized()
@@ -84,6 +91,8 @@ void DeckGUI::resized()
     double rowH = getHeight() / 8;
     double colW = getWidth() / 6;
 
+    trackTitle.setBounds(colW - xMargin, rowH - yMargin, colW * 3, rowH);
+    trackProgress.setBounds(colW - xMargin, rowH * 2 - yMargin, colW * 3, rowH);
     posSlider.setBounds(colW - xMargin, rowH * 3 - yMargin, colW * 3, rowH);
     waveformDisplay.setBounds(colW - xMargin, rowH * 4 - yMargin, colW * 3, rowH);
     loadButton.setBounds(colW - xMargin, rowH * 5 - yMargin, colW, rowH);
@@ -113,22 +122,30 @@ void DeckGUI::buttonClicked(juce::Button *button)
             juce::FileBrowserComponent::canSelectFiles;
         fChooser.launchAsync(fileChooserFlags, [this](const juce::FileChooser &chooser)
                              {
-            player->loadURL(juce::URL{chooser.getResult()});
-            // and now the waveformDisplay as well
-            waveformDisplay.loadURL(juce::URL{chooser.getResult()}); });
+                                 player->loadURL(juce::URL{chooser.getResult()});
+                                 // and now the waveformDisplay as well
+                                 waveformDisplay.loadURL(juce::URL{chooser.getResult()});
+                                 // Display the track's title
+                                 trackTitle.setText(chooser.getResult().getFileNameWithoutExtension(), juce::NotificationType::sendNotification); });
     }
     if (button == &loopButton)
     {
         bool isLooping = player->getLooping();
         if (isLooping)
         {
-            player->setLooping(false);
-            button->setButtonText("Not looping");
+            bool success = player->setLooping(false);
+            if (success)
+            {
+                button->setButtonText("Not looping");
+            }
         }
         else
         {
-            player->setLooping(true);
-            button->setButtonText("Looping");
+            bool success = player->setLooping(true);
+            if (success)
+            {
+                button->setButtonText("Looping");
+            }
         }
     }
 }
@@ -151,6 +168,15 @@ void DeckGUI::sliderValueChanged(juce::Slider *slider)
     }
 }
 
+void DeckGUI::labelTextChanged(juce::Label *labelThatHasChanged)
+{
+    std::cout << "Track changed: " << labelThatHasChanged->getText() << std::endl;
+    if (labelThatHasChanged == &trackTitle && trackTitle.getText() != "No track selected")
+    {
+        player->start();
+    }
+}
+
 bool DeckGUI::isInterestedInFileDrag(const juce::StringArray &files)
 {
     std::cout << "DeckGUI::isInterestedInFileDrag" << std::endl;
@@ -163,6 +189,8 @@ void DeckGUI::filesDropped(const juce::StringArray &files, int x, int y)
     if (files.size() == 1)
     {
         player->loadURL(juce::URL{juce::File{files[0]}});
+        // Display the track's title
+        trackTitle.setText(juce::File{files[0]}.getFileNameWithoutExtension(), juce::NotificationType::dontSendNotification);
     }
 }
 
@@ -171,4 +199,8 @@ void DeckGUI::timerCallback()
     // std::cout << "DeckGUI::timerCallback" << std::endl;
     waveformDisplay.setPositionRelative(
         player->getPositionRelative());
+    if (trackTitle.getText() != "No track selected")
+    {
+        trackProgress.setText(player->getTrackProgress(), juce::NotificationType::dontSendNotification);
+    }
 }
